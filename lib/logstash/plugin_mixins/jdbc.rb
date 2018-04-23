@@ -224,8 +224,9 @@ module LogStash::PluginMixins::Jdbc
 
         sql_last_value = @use_column_value ? @value_tracker.value : Time.now.utc
         @tracking_column_warning_sent = false
-        @logger.debug? and @logger.debug("Executing JDBC query", :statement => statement, :parameters => parameters, :count => query.count)
-
+        @logger.info("Executing JDBC query", :statement => statement, :parameters => parameters, :count => query.count)
+        @logger.warn? and @logger.warn("Executing JDBC query", :statement => statement, :parameters => parameters, :count => query.count)
+        
         perform_query(query) do |row|
           sql_last_value = get_column_value(row) if @use_column_value
           yield extract_values_from(row)
